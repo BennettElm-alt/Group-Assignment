@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Page</title>
+    <link rel="stylesheet" href="assets/styles/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Tournament Site</h1>
+            <img src="assets/images/logo.png" alt="Site Logo" class="logo">
+        </header>
+
+        <button id="addTournamentButton">Create New Tournament</button>
+
+        <!-- Form to Create/Update Tournament -->
+        <div id="formContainer" style="display: none;">
+            <h2 id="formTitle">Create Tournament</h2>
+            <form id="tournamentForm">
+                <label for="tournamentName">Tournament Name:</label>
+                <input type="text" id="tournamentName" required>
+                <label for="location">Location:</label>
+                <input type="text" id="location" required>
+                <label for="date">Date:</label>
+                <input type="date" id="date" required>
+                <button type="submit">Save</button>
+                <button type="button" id="cancelButton">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Table to Display Tournaments -->
+        <table id="tournamentTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <footer>
+            <p>&copy; 2024 My Tournament Site</p>
+        </footer>
+    </div>
+    <script src="assets/scripts/script.js" defer></script>
+</body>
+</html>
+
