@@ -1,78 +1,79 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const addTournamentButton = document.getElementById('addTournamentButton');
-    const formContainer = document.getElementById('formContainer');
-    const tournamentForm = document.getElementById('tournamentForm');
-    const tournamentTable = document.querySelector('#tournamentTable tbody');
-    const cancelButton = document.getElementById('cancelButton');
+document.addEventListener("DOMContentLoaded", () => {
+    // Select elements
+    const addTournamentButton = document.getElementById("addTournamentButton");
+    const formContainer = document.getElementById("formContainer");
+    const tournamentForm = document.getElementById("tournamentForm");
+    const tournamentTableBody = document.querySelector("#tournamentTable tbody");
+    const cancelButton = document.getElementById("cancelButton");
+    const formTitle = document.getElementById("formTitle");
 
-    let tournaments = [];
-    let editingIndex = null;
+    let editingRow = null;
 
     // Show the form to create a new tournament
-    addTournamentButton.addEventListener('click', () => {
-        formContainer.style.display = 'block';
+    addTournamentButton.addEventListener("click", () => {
+        formContainer.style.display = "block";
+        formTitle.textContent = "Create Tournament";
         tournamentForm.reset();
-        editingIndex = null;
-        document.getElementById('formTitle').textContent = 'Create Tournament';
+        editingRow = null; // Reset editing state
     });
 
-    // Hide the form
-    cancelButton.addEventListener('click', () => {
-        formContainer.style.display = 'none';
+    // Hide the form and reset it
+    cancelButton.addEventListener("click", () => {
+        formContainer.style.display = "none";
+        tournamentForm.reset();
     });
 
-    // Add or update tournament
-    tournamentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('tournamentName').value;
-        const location = document.getElementById('location').value;
-        const date = document.getElementById('date').value;
+    // Handle form submission
+    tournamentForm.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-        if (editingIndex === null) {
-            tournaments.push({ name, location, date });
+        const name = document.getElementById("tournamentName").value;
+        const location = document.getElementById("location").value;
+        const date = document.getElementById("date").value;
+
+        if (editingRow) {
+            // Update the existing row
+            editingRow.cells[0].textContent = name;
+            editingRow.cells[1].textContent = location;
+            editingRow.cells[2].textContent = date;
         } else {
-            tournaments[editingIndex] = { name, location, date };
-            editingIndex = null;
-        }
-
-        formContainer.style.display = 'none';
-        renderTable();
-    });
-
-    // Render tournaments in the table
-    function renderTable() {
-        tournamentTable.innerHTML = '';
-        tournaments.forEach((tournament, index) => {
-            const row = document.createElement('tr');
-
+            // Add a new row
+            const row = tournamentTableBody.insertRow();
             row.innerHTML = `
-                <td>${tournament.name}</td>
-                <td>${tournament.location}</td>
-                <td>${tournament.date}</td>
+                <td>${name}</td>
+                <td>${location}</td>
+                <td>${date}</td>
                 <td>
-                    <button onclick="editTournament(${index})">Edit</button>
-                    <button onclick="deleteTournament(${index})">Delete</button>
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
                 </td>
             `;
 
-            tournamentTable.appendChild(row);
-        });
+            // Add event listeners for new buttons
+            row.querySelector(".btn-edit").addEventListener("click", () => editTournament(row));
+            row.querySelector(".btn-delete").addEventListener("click", () => deleteTournament(row));
+        }
+
+        // Hide the form
+        formContainer.style.display = "none";
+        tournamentForm.reset();
+    });
+
+    // Edit a tournament
+    function editTournament(row) {
+        editingRow = row;
+        formTitle.textContent = "Edit Tournament";
+        formContainer.style.display = "block";
+
+        document.getElementById("tournamentName").value = row.cells[0].textContent;
+        document.getElementById("location").value = row.cells[1].textContent;
+        document.getElementById("date").value = row.cells[2].textContent;
     }
 
-    // Edit tournament
-    window.editTournament = function(index) {
-        const tournament = tournaments[index];
-        document.getElementById('tournamentName').value = tournament.name;
-        document.getElementById('location').value = tournament.location;
-        document.getElementById('date').value = tournament.date;
-        formContainer.style.display = 'block';
-        document.getElementById('formTitle').textContent = 'Edit Tournament';
-        editingIndex = index;
-    };
-
-    // Delete tournament
-    window.deleteTournament = function(index) {
-        tournaments.splice(index, 1);
-        renderTable();
-    };
+    // Delete a tournament
+    function deleteTournament(row) {
+        if (confirm("Are you sure you want to delete this tournament?")) {
+            row.remove();
+        }
+    }
 });
